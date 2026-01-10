@@ -14,8 +14,13 @@
         <ul class="menu">
             <li class="active">Profile</li>
             <li><a href="{% url 'reports:reports' %}" style='text-decoration: none;color: #fff;'>Reports</a></li>
-            <li>setting</li>
+            
             <li>
+                <button id="open-profile-modal" class="btn primary">
+    Edit Profile
+</button>
+
+            </li>
               <form method="post" action="{% url 'users:logout' %}">
                 {% csrf_token %}
                 <button type="submit" style='background-color: #111827;border: none;color: #fff;' class='bt_fo'>Logout</button>
@@ -29,8 +34,12 @@
 
         <!-- Profile Header -->
         <section class="profile-header">
-            <div class="avatar">
-                <img src="{% static '{{ profile.avatar.url }}' %}" >
+             <div class="avatar">
+                {% if context.profile.avatar %}
+                    <img src="{{ context.profile.avatar.url }}" alt="Avatar">
+                {% else %}
+                    <img src="{% static 'images/default-avatar.png' %}" alt="Avatar">
+                {% endif %}
             </div>
             <div class="info">
                 <h1>{{ context.user.username }}</h1>
@@ -50,12 +59,12 @@
 
             <div class="card">
                 <h3>Location</h3>
-                <p>{{ context.profile.city }}</p>
+                <p>{{ context.profile.city|default:"Not set"  }}</p>
             </div>
 
             <div class="card">
                 <h3>Member Since</h3>
-                <p>Jan 2024</p>
+                <p>{{ context.user.date_joined|date:"M Y" }}</p>
             </div>
         </section>
 
@@ -67,11 +76,78 @@
                 and building scalable systems that actually work in real life.
             </p>
         </section>
-
+        
     </main>
-
+    
 </div>
 
+
+   
+<div id="profile-modal" class="modal hidden">
+    <div class="modal-box">
+
+        <h3>Edit Profile</h3>
+        
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label>Bio</label>
+                {{ context.form.bio }}
+            </div>
+
+            <div class="form-group">
+                <label>City</label>
+                {{ context.form.city }}
+            </div>
+
+            <div class="form-group">
+                <label>Avatar</label>
+                {{ context.form.avatar }}
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn primary">Save</button>
+                <button type="button" class="btn secondary" id="close-profile-modal">
+                    Cancel
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% if context.form.errors %}
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.getElementById("profile-modal").classList.remove("hidden");
+    });
+</script>
+{% endif %}
+
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("profile-modal");
+
+    document
+        .getElementById("open-profile-modal")
+        .addEventListener("click", () => {
+            modal.classList.remove("hidden");
+        });
+
+    document
+        .getElementById("close-profile-modal")
+        .addEventListener("click", () => {
+            modal.classList.add("hidden");
+        });
+});
+</script>
+
 {% endblock %}
+
 {% block extra_js %}
+
+
+
+
 {% endblock %}
