@@ -62,14 +62,45 @@ body {
     align-items: center;
     margin-bottom: 40px;
 }
-
-.avatar {
-    width: 120px;
-    height: 120px;
-    background: #ccc;
+.avatar-ring {
+    width: 110px;
+    height: 110px;
     border-radius: 50%;
-    margin-right: 25px;
+    background: linear-gradient(135deg,
+            #3b82f6,
+            #22c55e,
+            #ec4899);
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
+.avatar-img {
+    width: 95px;
+    height: 95px;
+    background: #111827;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.avatar-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.online-dot {
+    position: absolute;
+    bottom: 6px;
+    right: 6px;
+    width: 14px;
+    height: 14px;
+    background: #22c55e;
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
 
 .info h1 {
     font-size: 28px;

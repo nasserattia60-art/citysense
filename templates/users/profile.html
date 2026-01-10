@@ -34,19 +34,25 @@
 
         <!-- Profile Header -->
         <section class="profile-header">
-             <div class="avatar">
+            <div class="avatar-ring ">
+                <div class="avatar-img">
                 {% if context.profile.avatar %}
-                    <img src="{{ context.profile.avatar.url }}" alt="Avatar">
+                    <img src="{{ context.profile.avatar.url }}" alt="ar Avatar">
+                    <span class="online-dot"></span>
                 {% else %}
                     <img src="{% static 'images/default-avatar.png' %}" alt="Avatar">
+                    <span class="online-dot"></span>
                 {% endif %}
+                
+                </div>
             </div>
+         
             <div class="info">
                 <h1>{{ context.user.username }}</h1>
                 {% if context.profile.bio %}
-                 <p><strong>Bio:</strong> {{ context.profile.bio }}</p>
+                <p><strong>Bio:</strong> {{ context.profile.bio }}</p>
                 {% endif %}
-                <span class="badge">Premium User</span>
+                
             </div>
         </section>
 
