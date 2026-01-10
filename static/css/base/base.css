@@ -295,6 +295,7 @@ footer p.bottom-text {
     max-width: 400px;
     width: 90%;
     text-align: center;
+    position: relative;
 }
 
 .auth-box .actions {

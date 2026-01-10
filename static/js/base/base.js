@@ -15,19 +15,3 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    const modal = document.getElementById("auth-modal");
-
-    document.querySelectorAll(".auth-required").forEach(link => {
-        link.addEventListener("click", e => {
-            if (!window.USER_IS_AUTHENTICATED) {
-                e.preventDefault();
-                modal.classList.remove("hidden");
-            }
-        });
-    });
-
-    modal.querySelector(".close-btn").onclick = () => {
-        modal.classList.add("hidden");
-    };
-});

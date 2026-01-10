@@ -21,6 +21,9 @@
 <main>
     {% block content %}{% endblock %}
 </main>
+
+{% if user.is_authenticated %}
+{% else %}
 <div id="auth-modal" class="auth-modal hidden">
  <div class="auth-box">
      <h3>Login Required</h3>
@@ -39,6 +42,27 @@
 
 
 {% block extra_js %}{% endblock %}
+
+<script >
+document.addEventListener("DOMContentLoaded", () => {
+    const modal = document.getElementById("auth-modal");
+
+    document.querySelectorAll(".auth-required").forEach(link => {
+        link.addEventListener("click", e => {
+            if (!window.USER_IS_AUTHENTICATED) {
+                e.preventDefault();
+                modal.classList.remove("hidden");
+            }
+        });
+    });
+
+    modal.querySelector(".close-btn").onclick = () => {
+        modal.classList.add("hidden");
+    };
+});
+{% endif %}
+</script>
+
 
 <script src="{% static 'js/base/base.js' %}"></script>
 
