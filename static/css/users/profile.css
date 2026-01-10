@@ -206,6 +206,9 @@ body {
 .form-group {
     margin-bottom: 1rem;
 }
+.form-group a{
+    display: none;
+}
 
 .form-group input,
 .form-group textarea,
