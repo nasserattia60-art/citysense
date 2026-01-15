@@ -1,60 +1,13 @@
 {% extends "base/base.html" %}
 {% load static %}
-{% block title %}CitySense | analysis city or area{% endblock %}
+
+{% block title %}CitySense | Analyze Location{% endblock %}
+
 {% block extra_css %}
-<link rel="stylesheet" href=" {% static 'css/analysis/analyze.css' %}">
-{% endblock %}
-{% block content %}
-<h2>Analyze Location</h2>
-<form method="post" class="analyze-form">
-  {% csrf_token %}
-  {{ form }}
-  <ul id="suggestions"></ul>
-  <button type="submit">Analyze</button>
-  {% if error %}
-    <p>{{ error }}</p>
-  {% endif %}
-</form>
-{% endblock %}
-{% block extra_js %}
-
-<script>
-const input = document.getElementById('id_address');
-const suggestionsList = document.getElementById('suggestions');
-
-
-const suggestionsURL = "{% url 'analysis:city_suggestions' %}";
-
-let debounceTimeout;
-input.addEventListener('input', () => {
-    clearTimeout(debounceTimeout);
-
-    debounceTimeout = setTimeout(async () => {
-        const query = input.value.trim();
-        if (!query) {
-            suggestionsList.innerHTML = '';
-            return;
-        }
-
-        const response = await fetch(`${suggestionsURL}?q=${encodeURIComponent(query)}`);
-        const cities = await response.json();
-
-        suggestionsList.innerHTML = cities.map(city =>
-            `<li data-lat="${city.lat}" data-lon="${city.lon}">${city.name}</li>`
-        ).join('');
-
-        suggestionsList.querySelectorAll('li').forEach(li => {
-            li.addEventListener('click', () => {
-                input.value = li.textContent;
-                suggestionsList.innerHTML = '';
-                console.log('Lat:', li.dataset.lat, 'Lon:', li.dataset.lon);
-            });
-        });
-    }, 250); // debounce 250ms
-});
-</script>
+<link rel="stylesheet" href="{% static 'css/analysis/analyze.css' %}">
 
 <style>
+/* Suggestions dropdown */
 #suggestions {
     list-style: none;
     border: 1px solid #ccc;
@@ -62,13 +15,85 @@ input.addEventListener('input', () => {
     overflow-y: auto;
     padding: 0;
     margin: 0;
+    background: #fff;
+    position: absolute;
+    width: 100%;
+    z-index: 10;
 }
+
 #suggestions li {
     padding: 5px 10px;
     cursor: pointer;
 }
+
 #suggestions li:hover {
     background-color: #f0f0f0;
 }
 </style>
+{% endblock %}
+
+{% block content %}
+<h2>Analyze Location</h2>
+
+<form method="post" class="analyze-form" style="position: relative;">
+    {% csrf_token %}
+
+    {{ form.address }}
+
+    <ul id="suggestions"></ul>
+
+    <button type="submit">Analyze</button>
+
+    {% if error %}
+        <p style="color:red">{{ error }}</p>
+    {% endif %}
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("id_address");
+    const suggestionsList = document.getElementById("suggestions");
+    const suggestionsURL = "{% url 'analysis:city_suggestions' %}";
+
+    if (!input) return; // Safety check
+
+    let debounceTimeout;
+
+    input.addEventListener("input", () => {
+        clearTimeout(debounceTimeout);
+
+        debounceTimeout = setTimeout(async () => {
+            const query = input.value.trim();
+            if (!query) {
+                suggestionsList.innerHTML = "";
+                return;
+            }
+
+            try {
+                const response = await fetch(`${suggestionsURL}?q=${encodeURIComponent(query)}`);
+                if (!response.ok) throw new Error("Network response was not ok");
+
+                const cities = await response.json();
+
+                suggestionsList.innerHTML = cities.map(city =>
+                    `<li data-lat="${city.lat}" data-lon="${city.lon}">${city.name}</li>`
+                ).join("");
+
+                suggestionsList.querySelectorAll("li").forEach(li => {
+                    li.addEventListener("click", () => {
+                        input.value = li.textContent;
+                        suggestionsList.innerHTML = "";
+                        console.log('Selected:', li.dataset.lat, li.dataset.lon);
+                    });
+                });
+
+            } catch (err) {
+                console.error("Autocomplete error:", err);
+            }
+        }, 250); // debounce 250ms
+    });
+});
+</script>
 {% endblock %}

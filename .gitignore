@@ -19,8 +19,8 @@ db.sqlite3
 *.pyc    
 *.pyo
 *.log
-*.sqlite3-journal
-.env
+# *.sqlite3-journal
+# .env
 media/
 
 requirements.txt
