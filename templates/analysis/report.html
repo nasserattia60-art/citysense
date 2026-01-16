@@ -1,116 +1,155 @@
 {% extends "base/base.html" %}
 {% load static %}
-{% block title %}CitySense | city report{% endblock %}
+{% block title %}CitySense | City Report - {{ report.location.address }}{% endblock %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/analysis/report.css' %}">
+<style>
+.report-container {
+    max-width: 900px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
+.report-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.report-header h1 {
+    margin: 0;
+    font-size: 2em;
+}
+
+.report-score {
+    font-size: 1.2em;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.report-card section {
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.report-card section:last-child {
+    border-bottom: none;
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--secondary-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s;
+    margin-top: 10px;
+}
+
+.cta-button:hover {
+    background: #27ae60;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+@media (max-width: 768px) {
+    .report-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .report-metrics {
+        flex-direction: column !important;
+    }
+}
+</style>
 {% endblock %}
 
 {% block content %}
 
 <div class="report-container">
+    <a href="{% url 'analysis:analyze' %}" class="back-link">← Back to Analysis</a>
+    
     <article class="report-card">
 
         <!-- Header -->
-        <section>
-            <h2>CitySense Report</h2>
-            {% if report.avg_feedback_score %}
-                <p><strong>AI Quality Score:</strong> {{ report.avg_feedback_score }}/5</p>
-            {% endif %}
-            <p><strong>Address:</strong> {{ report.location.address }}</p>
+        <section class="report-header">
+            <div>
+                <h1>{{ report.location.address }}</h1>
+                <p style="color: #666; margin: 5px 0 0 0;">
+                    <small>Generated {{ report.created_at|date:"M d, Y" }}</small>
+                </p>
+            </div>
+            <div class="report-score">
+                <div style="font-size: 0.6em; color: #999; margin-bottom: 5px;">AI Score</div>
+                <div style="font-size: 2.5em;">{{ report.ai_score }}<span style="font-size: 0.4em;">/100</span></div>
+                {% if report.avg_feedback_score %}
+                    <p style="font-size: 0.8em; margin-top: 10px; color: #666;">
+                        Community: {{ report.avg_feedback_score }}/5
+                    </p>
+                {% endif %}
+            </div>
         </section>
 
         <!-- Core Metrics -->
-        <section class="report-metrics">
-            <div class="metric-card">
-                <h4>Safety</h4>
-                <p>{{ report.safety_score }}</p>
-                <canvas id="chart-safety"></canvas>
-            </div>
+        <section>
+            <h2>Key Metrics</h2>
+            <div class="report-metrics">
+                <div class="metric-card">
+                    <h4>Safety</h4>
+                    <p style="font-size: 1.5em; color: var(--primary-color);">{{ report.safety_score }}/10</p>
+                </div>
 
-            <div class="metric-card">
-                <h4>Noise</h4>
-                <p>{{ report.noise_level }}</p>
-                <canvas id="chart-noise"></canvas>
-            </div>
+                <div class="metric-card">
+                    <h4>Noise Level</h4>
+                    <p>{{ report.noise_level }}</p>
+                </div>
 
-            <div class="metric-card">
-                <h4>Rent</h4>
-                <p>{{ report.rent_level }}</p>
-                <canvas id="chart-rent"></canvas>
-            </div>
+                <div class="metric-card">
+                    <h4>Rent Level</h4>
+                    <p>{{ report.rent_level }}</p>
+                </div>
 
-            <div class="metric-card">
-                <h4>Water Quality</h4>
-                <p>{{ report.water_quality }}</p>
-                <canvas id="chart-water"></canvas>
-            </div>
-
-            <div class="metric-card">
-                <h4>AI Score</h4>
-                <p>{{ report.ai_score }}/100</p>
-                <canvas id="chart-ai"></canvas>
+                <div class="metric-card">
+                    <h4>Water Quality</h4>
+                    <p>{{ report.water_quality }}</p>
+                </div>
             </div>
         </section>
 
         <!-- AI Summary -->
         <section class="report-summary">
-            <p>{{ report.ai_summary }}</p>
-            <a href="/community/feedback/{{ report.id }}/" class="report-link">
-                Improve this analysis
+            <h2>AI Analysis</h2>
+            <p style="line-height: 1.8; font-size: 1.05em;">{{ report.ai_summary }}</p>
+            <a href="{% url 'community:feedback' report.id %}" class="cta-button">
+                Share Feedback to Improve
             </a>
         </section>
-
-        <!-- AI Extended Insights -->
-        {% if report.city_name %}
-        <section class="report-ai-details">
-            <h3>AI Insights</h3>
-            <ul>
-                <li><strong>City:</strong> {{ report.city_name }}</li>
-                <li><strong>Tourism Score:</strong> {{ report.tourism_score }}/100</li>
-                <li><strong>Noise Level:</strong> {{ report.noise_level }}</li>
-                <li><strong>Rent Level:</strong> {{ report.rent_level }}</li>
-                <li><strong>Water Quality:</strong> {{ report.water_quality }}</li>
-            </ul>
-        </section>
-        {% endif %}
-
-        <!-- Attractions & History -->
-        {% if report.top_attractions %}
-        <section class="report-attractions">
-            <h3>Top Attractions</h3>
-            <ul>
-                {% for item in report.top_attractions %}
-                    <li>{{ item }}</li>
-                {% endfor %}
-            </ul>
-        </section>
-        {% endif %}
-
-        {% if report.historical_landmarks %}
-        <section class="report-attractions">
-            <h3>Historical Landmarks</h3>
-            <ul>
-                {% for item in report.historical_landmarks %}
-                    <li>{{ item }}</li>
-                {% endfor %}
-            </ul>
-        </section>
-        {% endif %}
-
-        {% if report.cultural_notes %}
-        <section class="report-cultural">
-            <h3>Cultural Notes</h3>
-            <p>{{ report.cultural_notes }}</p>
-        </section>
-        {% endif %}
 
         <!-- Weather Info -->
         {% if report.temperature %}
         <section class="report-weather">
-            <h3>Weather Info</h3>
+            <h2>Current Weather</h2>
             <div class="report-metrics">
-
                 <div class="metric-card">
                     <h4>Feels Like</h4>
                     <p>{{ report.temperature }} °C</p>
@@ -121,28 +160,27 @@
                     <p>{{ report.windspeed }} km/h</p>
                 </div>
 
+                {% if report.weather_code %}
                 <div class="metric-card">
-                    <h4>Weather Code</h4>
+                    <h4>Conditions</h4>
                     <p>{{ report.weather_code }}</p>
                 </div>
-
-                {% if report.weather_risk_level %}
-                <div class="metric-card">
-                    <h4>Weather Risk</h4>
-                    <p>{{ report.weather_risk_level }}</p>
-                </div>
                 {% endif %}
-
-                {% if report.min_visibility_km %}
-                <div class="metric-card">
-                    <h4>Visibility</h4>
-                    <p>{{ report.min_visibility_km }} km</p>
-                </div>
-                {% endif %}
-
             </div>
         </section>
         {% endif %}
+
+        <!-- Actions -->
+        <section style="border-bottom: none; margin-top: 30px; padding-top: 30px; border-top: 1px solid rgba(0,0,0,0.1);">
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <a href="{% url 'analysis:analyze' %}" class="cta-button" style="background: var(--primary-color); color: white;">
+                    Analyze Another City
+                </a>
+                <a href="{% url 'reports:reports' %}" class="cta-button" style="background: #666;">
+                    View All Reports
+                </a>
+            </div>
+        </section>
 
     </article>
 </div>

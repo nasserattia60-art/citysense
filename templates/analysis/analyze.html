@@ -7,47 +7,177 @@
 <link rel="stylesheet" href="{% static 'css/analysis/analyze.css' %}">
 
 <style>
+.analyze-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.analyze-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.form-group {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#id_address {
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+#id_address:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
 /* Suggestions dropdown */
 #suggestions {
     list-style: none;
-    border: 1px solid #ccc;
-    max-height: 150px;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px;
     overflow-y: auto;
     padding: 0;
     margin: 0;
     background: #fff;
     position: absolute;
     width: 100%;
+    top: 100%;
+    left: 0;
+    right: 0;
     z-index: 10;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#suggestions.hidden {
+    display: none;
 }
 
 #suggestions li {
-    padding: 5px 10px;
+    padding: 12px 16px;
     cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+    transition: background-color 0.2s;
 }
 
-#suggestions li:hover {
-    background-color: #f0f0f0;
+#suggestions li:last-child {
+    border-bottom: none;
+}
+
+#suggestions li:hover,
+#suggestions li:focus {
+    background-color: #f5f5f5;
+}
+
+#suggestions li:active {
+    background-color: #e8e8e8;
+}
+
+/* Button styling */
+button[type="submit"] {
+    padding: 12px 24px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+button[type="submit"]:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Error message */
+.error-message {
+    padding: 12px 16px;
+    background-color: #fee;
+    color: #c33;
+    border-left: 4px solid #c33;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* Loading indicator */
+.loading {
+    display: none;
+    text-align: center;
+    color: #666;
+    font-size: 14px;
+}
+
+.loading.active {
+    display: block;
+}
+
+/* Empty state */
+#suggestions.empty {
+    padding: 20px;
+    text-align: center;
+    color: #999;
+    cursor: default;
+}
+
+#suggestions.empty li {
+    padding: 0;
+    border: none;
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<h2>Analyze Location</h2>
+<div class="analyze-container">
+    <h2>Analyze a City</h2>
+    <p style="color: #666; margin-bottom: 30px;">
+        Search for any city or location to get AI-powered insights about safety, 
+        cost of living, weather, and more.
+    </p>
 
-<form method="post" class="analyze-form" style="position: relative;">
-    {% csrf_token %}
+    <form method="post" class="analyze-form">
+        {% csrf_token %}
 
-    {{ form.address }}
+        <div class="form-group">
+            <label for="id_address" style="font-weight: 600;">City or Address</label>
+            {{ form.address }}
+            <ul id="suggestions" class="hidden"></ul>
+            <div class="loading" id="loading-indicator">Searching...</div>
+        </div>
 
-    <ul id="suggestions"></ul>
+        <button type="submit" id="submit-btn">Analyze City</button>
 
-    <button type="submit">Analyze</button>
-
-    {% if error %}
-        <p style="color:red">{{ error }}</p>
-    {% endif %}
-</form>
+        {% if error %}
+            <div class="error-message">{{ error }}</div>
+        {% endif %}
+    </form>
+</div>
 {% endblock %}
 
 {% block extra_js %}
@@ -56,43 +186,122 @@ document.addEventListener("DOMContentLoaded", () => {
     const input = document.getElementById("id_address");
     const suggestionsList = document.getElementById("suggestions");
     const suggestionsURL = "{% url 'analysis:city_suggestions' %}";
+    const loadingIndicator = document.getElementById("loading-indicator");
+    const submitBtn = document.getElementById("submit-btn");
 
     if (!input) return; // Safety check
 
     let debounceTimeout;
+    let selectedIndex = -1;
+
+    // Keyboard navigation support
+    input.addEventListener("keydown", (e) => {
+        const items = suggestionsList.querySelectorAll("li");
+        if (items.length === 0) return;
+
+        switch(e.key) {
+            case "ArrowDown":
+                e.preventDefault();
+                selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+                updateSelection(items);
+                break;
+            case "ArrowUp":
+                e.preventDefault();
+                selectedIndex = Math.max(selectedIndex - 1, -1);
+                updateSelection(items);
+                break;
+            case "Enter":
+                if (selectedIndex >= 0) {
+                    e.preventDefault();
+                    items[selectedIndex].click();
+                }
+                break;
+            case "Escape":
+                suggestionsList.classList.add("hidden");
+                break;
+        }
+    });
+
+    function updateSelection(items) {
+        items.forEach((item, idx) => {
+            item.classList.toggle("active", idx === selectedIndex);
+            if (idx === selectedIndex) {
+                item.scrollIntoView({ block: "nearest" });
+            }
+        });
+    }
 
     input.addEventListener("input", () => {
         clearTimeout(debounceTimeout);
+        selectedIndex = -1;
+        
+        const query = input.value.trim();
+        if (!query) {
+            suggestionsList.classList.add("hidden");
+            loadingIndicator.classList.remove("active");
+            return;
+        }
+
+        loadingIndicator.classList.add("active");
 
         debounceTimeout = setTimeout(async () => {
-            const query = input.value.trim();
-            if (!query) {
-                suggestionsList.innerHTML = "";
-                return;
-            }
-
             try {
                 const response = await fetch(`${suggestionsURL}?q=${encodeURIComponent(query)}`);
-                if (!response.ok) throw new Error("Network response was not ok");
+                if (!response.ok) throw new Error("Network error");
 
                 const cities = await response.json();
+                loadingIndicator.classList.remove("active");
 
-                suggestionsList.innerHTML = cities.map(city =>
-                    `<li data-lat="${city.lat}" data-lon="${city.lon}">${city.name}</li>`
+                if (cities.length === 0) {
+                    suggestionsList.innerHTML = '<li class="empty">No results found. Try another search.</li>';
+                    suggestionsList.classList.remove("hidden");
+                    return;
+                }
+
+                // Limit to 8 suggestions for better UX
+                const limited = cities.slice(0, 8);
+                suggestionsList.innerHTML = limited.map(city =>
+                    `<li data-lat="${city.lat}" data-lon="${city.lon}" role="option">${city.name}</li>`
                 ).join("");
+                
+                suggestionsList.classList.remove("hidden", "empty");
+                selectedIndex = -1;
 
-                suggestionsList.querySelectorAll("li").forEach(li => {
+                // Add click handlers
+                suggestionsList.querySelectorAll("li:not(.empty)").forEach(li => {
                     li.addEventListener("click", () => {
                         input.value = li.textContent;
-                        suggestionsList.innerHTML = "";
-                        console.log('Selected:', li.dataset.lat, li.dataset.lon);
+                        suggestionsList.classList.add("hidden");
+                        input.focus();
+                    });
+                    
+                    li.addEventListener("mouseenter", () => {
+                        selectedIndex = Array.from(suggestionsList.querySelectorAll("li")).indexOf(li);
+                        updateSelection(suggestionsList.querySelectorAll("li"));
                     });
                 });
 
             } catch (err) {
                 console.error("Autocomplete error:", err);
+                loadingIndicator.classList.remove("active");
+                suggestionsList.innerHTML = '<li class="empty">Error loading suggestions</li>';
+                suggestionsList.classList.remove("hidden");
             }
-        }, 250); // debounce 250ms
+        }, 300); // debounce 300ms
+    });
+
+    // Close suggestions when clicking outside
+    document.addEventListener("click", (e) => {
+        if (e.target !== input && !suggestionsList.contains(e.target)) {
+            suggestionsList.classList.add("hidden");
+        }
+    });
+
+    // Show loading state on submit
+    const form = document.querySelector(".analyze-form");
+    form.addEventListener("submit", () => {
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Analyzing...";
     });
 });
 </script>

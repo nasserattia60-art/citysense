@@ -9,43 +9,50 @@
 <link rel="stylesheet" href="{% static 'css/base/all.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/base/base.css' %}">
 
-
 {% block extra_css %}{% endblock %}
 </head>
 <body>
 
-
     {% include 'base/header.html' %}
-
 
 <main>
     {% block content %}{% endblock %}
 </main>
 
 {% if user.is_authenticated %}
+    <script>
+        window.USER_IS_AUTHENTICATED = true;
+    </script>
 {% else %}
-<div id="auth-modal" class="auth-modal hidden">
- <div class="auth-box">
-     <h3>Login Required</h3>
-     <p>You need an account to access this feature.</p>
+    <script>
+        window.USER_IS_AUTHENTICATED = false;
+    </script>
+    <div id="auth-modal" class="auth-modal hidden">
+        <div class="auth-box">
+            <h3>Login Required</h3>
+            <p>You need an account to access this feature.</p>
 
-     <div class="actions">
-         <a href=" {% url 'users:login' %} " class="btn primary">Login</a>
-         <a href="{% url 'users:register' %}" class="btn secondary">Create Account</a>
-     </div>
+            <div class="actions">
+                <a href="{% url 'users:login' %}" class="btn primary">Login</a>
+                <a href="{% url 'users:register' %}" class="btn secondary">Create Account</a>
+            </div>
 
-     <button class="close-btn">&times;</button>
- </div>
-</div>
+            <button class="close-btn">&times;</button>
+        </div>
+    </div>
+{% endif %}
 
-  {% include 'base/footer.html' %}
-
+{% include 'base/footer.html' %}
 
 {% block extra_js %}{% endblock %}
 
-<script >
+<script src="{% static 'js/base/base.js' %}"></script>
+
+<script>
 document.addEventListener("DOMContentLoaded", () => {
     const modal = document.getElementById("auth-modal");
+    
+    if (!modal) return; // Not needed for authenticated users
 
     document.querySelectorAll(".auth-required").forEach(link => {
         link.addEventListener("click", e => {
@@ -59,12 +66,15 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.querySelector(".close-btn").onclick = () => {
         modal.classList.add("hidden");
     };
+
+    // Close modal when clicking outside
+    modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            modal.classList.add("hidden");
+        }
+    });
 });
-{% endif %}
 </script>
-
-
-<script src="{% static 'js/base/base.js' %}"></script>
 
 </body>
 </html>

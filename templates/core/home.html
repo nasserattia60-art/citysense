@@ -8,19 +8,21 @@
 
 
 <section class="hero" aria-labelledby="hero-title">
-    <span class="importint_not">
-        Please register to start using CitySense
-    </span>
-
     <div class="container">
         <h1 id="hero-title">Welcome to CitySense</h1>
         <p>
             Your AI-powered guide to explore cities, understand real-life conditions,
             and make informed decisions.
         </p>
+        {% if not user.is_authenticated %}
+            <div class="important-note">
+                <p><strong>New here?</strong> <a href="{% url 'users:register' %}">Create an account</a> to start analyzing cities.</p>
+            </div>
+        {% endif %}
 
-        <a href="{% url 'analysis:analyze' %}" class="auth-required btn-primary btncn"> Start Exploring</a>
-      
+        <a href="{% url 'analysis:analyze' %}" class="auth-required btn-primary btncn">
+            {% if user.is_authenticated %}Start Exploring{% else %}Sign In to Explore{% endif %}
+        </a>
     </div>
 </section>
 
