@@ -1,0 +1,77 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv
+venv/
+env/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# IDEs
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Environment variables
+.env
+.env.local
+
+# Database
+db.sqlite3
+
+# Logs
+logs/
+*.log
+
+# Static and media files (will be collected in Docker)
+staticfiles/
+media/
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Railway
+railway.json
+railway.toml
+
+# Documentation
+*.md
+docs/
+
+# Other
+.travis.yml
+Procfile
+render.yaml
+build.sh

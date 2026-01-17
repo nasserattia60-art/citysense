@@ -4,12 +4,15 @@ import dj_database_url
 # Security: Disable DEBUG in production
 DEBUG = False
 
-# Render deployment hostname
+# Railway / Render deployment hostname
 ALLOWED_HOSTS = [
-    os.getenv("RENDER_EXTERNAL_HOSTNAME", "localhost"),
+    os.getenv("RAILWAY_PUBLIC_DOMAIN", ""),
+    os.getenv("RENDER_EXTERNAL_HOSTNAME", ""),
     "localhost",
     "127.0.0.1",
 ]
+# Filter out empty strings
+ALLOWED_HOSTS = [host for host in ALLOWED_HOSTS if host]
 
 # PostgreSQL via dj-database-url (Render FREE Plan)
 DATABASES = {

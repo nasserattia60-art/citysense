@@ -1,0 +1,22 @@
+[build]
+builder = "dockerfile"
+buildpacks = ["nixpacks"]
+
+[deploy]
+startCommand = "gunicorn citysense.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --worker-class sync --max-requests 100 --timeout 30"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 5
+
+[healthCheck]
+type = "http"
+endpoint = "/"
+interval = 300
+timeout = 30
+startPeriod = 60
+successThreshold = 1
+failureThreshold = 3
+
+[volumes]
+# Optional: Add volumes for persistent storage
+# "/app/media" = "media_volume"
+# "/app/logs" = "logs_volume"
