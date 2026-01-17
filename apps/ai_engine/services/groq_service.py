@@ -16,7 +16,19 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-client = Groq(api_key=settings.GROQ_API_KEY)
+# Lazy initialization to avoid import-time errors during Django startup
+_client = None
+
+def get_groq_client():
+    """Get or create the Groq client lazily."""
+    global _client
+    if _client is None:
+        try:
+            _client = Groq(api_key=settings.GROQ_API_KEY)
+        except Exception as e:
+            logger.error(f"Failed to initialize Groq client: {e}")
+            raise
+    return _client
 
 
 def analyze_location_ai(address, lat, lng):
@@ -40,6 +52,7 @@ def analyze_location_ai(address, lat, lng):
         groq.APIError: If API call fails
     """
     try:
+        client = get_groq_client()
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[
