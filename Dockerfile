@@ -42,8 +42,8 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PORT=8000
 
-# Expose port
-EXPOSE $PORT
+# Expose port (use static port for build, runtime uses $PORT)
+EXPOSE 8000
 
 # Run migrations and start server
-CMD ["sh", "-c", "python manage.py migrate --no-input && gunicorn citysense.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --worker-class sync --max-requests 100 --timeout 30"]
+CMD python manage.py migrate --no-input && exec gunicorn citysense.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 1 --worker-class sync --max-requests 100 --timeout 30
