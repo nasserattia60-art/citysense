@@ -35,13 +35,3 @@ def dashboard_view(request):
     logger.debug(f"Dashboard viewed by user: {request.user.id}")
     return render(request, "dashboard/dashboard.html", context)
 
-
-@login_required
-def map_view(request):
-    """
-    Interactive map view showing all analysis locations.
-    
-    Future: Add heatmap layer selection and filtering.
-    """
-    logger.debug(f"Map viewed by user: {request.user.id}")
-    return render(request, "dashboard/map.html")

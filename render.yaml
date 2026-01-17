@@ -1,0 +1,40 @@
+services:
+  - type: web
+    name: citysense
+    env: python
+    pythonVersion: 3.11
+    region: oregon
+    plan: free
+
+    # Build phase
+    buildCommand: bash build.sh
+
+    # Start command - Gunicorn serving the Django app
+    startCommand: gunicorn citysense.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --worker-class sync --max-requests 100 --max-requests-jitter 10 --timeout 30 --log-level info
+
+    # Environment variables
+    envVars:
+      - key: RENDER
+        value: true
+      - key: DJANGO_SETTINGS_MODULE
+        value: citysense.settings.prod
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+    # Health check
+    healthCheckPath: /
+    healthCheckInterval: 300
+
+    # Restart policy
+    autoDeploy: true
+
+databases:
+  - name: citysense-db
+    engine: postgres
+    plan: free
+    version: 15
+    initialDatabase: citysense
+    user: citysense_user
+
+    # Auto backup (Free Plan: weekly backups retained for 7 days)
+    # Note: Free Plan includes basic automated backups

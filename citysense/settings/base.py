@@ -9,9 +9,11 @@ GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-
-SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
-
+# SECRET_KEY: Load from environment, never commit to repo
+SECRET_KEY = os.getenv(
+    "SECRET_KEY",
+    "dev-insecure-key-change-in-production"
+)
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -38,6 +40,7 @@ MIDDLEWARE = [
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'citysense.urls'
@@ -62,10 +65,11 @@ WSGI_APPLICATION = 'citysense.wsgi.application'
 
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 AUTH_USER_MODEL = "users.User"
 LOGIN_URL = "/users/login/"
@@ -75,6 +79,9 @@ LOGOUT_REDIRECT_URL = "/"
 # ============================================================================
 # SECURITY SETTINGS
 # ============================================================================
+
+# XFrame options for clickjacking protection
+X_FRAME_OPTIONS = 'DENY'
 
 # Session security
 SESSION_COOKIE_SECURE = True
@@ -88,22 +95,13 @@ CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 CSRF_COOKIE_SAMESITE = 'Lax'
 
-# Content security
-SECURE_CONTENT_SECURITY_POLICY = {
-    "default-src": ("'self'",),
-    "script-src": ("'self'", "'unsafe-inline'"),
-    "style-src": ("'self'", "'unsafe-inline'"),
-    "img-src": ("'self'", "data:", "https:"),
-    "font-src": ("'self'", "data:"),
-}
-
 # Input validation
 DATA_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
 FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
 FILE_UPLOAD_PERMISSIONS = 0o644
 
 # ============================================================================
-# LOGGING CONFIGURATION
+# LOGGING CONFIGURATION (Free Plan optimized)
 # ============================================================================
 
 LOGGING = {
@@ -111,11 +109,11 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "{levelname} {asctime} {module} {process:d} {thread:d} {message}",
+            "format": "{levelname} {asctime} {module} {message}",
             "style": "{",
         },
         "simple": {
-            "format": "{levelname} {asctime} {message}",
+            "format": "{levelname} {message}",
             "style": "{",
         },
     },
@@ -133,33 +131,22 @@ LOGGING = {
             "class": "logging.StreamHandler",
             "formatter": "simple",
         },
-        "file": {
-            "level": "INFO",
-            "class": "logging.handlers.RotatingFileHandler",
-            "filename": BASE_DIR / "logs" / "django.log",
-            "maxBytes": 1024 * 1024 * 10,  # 10MB
-            "backupCount": 5,
-            "formatter": "verbose",
-        },
     },
     "root": {
-        "handlers": ["console", "file"],
+        "handlers": ["console"],
         "level": "INFO",
     },
     "loggers": {
         "django": {
-            "handlers": ["console", "file"],
-            "level": "INFO",
+            "handlers": ["console"],
+            "level": "WARNING",
             "propagate": False,
         },
         "apps": {
-            "handlers": ["console", "file"],
-            "level": "DEBUG",
+            "handlers": ["console"],
+            "level": "INFO",
             "propagate": False,
         },
     },
 }
-
-# Create logs directory if it doesn't exist
-os.makedirs(BASE_DIR / "logs", exist_ok=True)
 

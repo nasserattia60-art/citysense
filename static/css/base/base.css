@@ -95,13 +95,14 @@ nav {
 .user-menu button {
     text-decoration: none;
     color: var(--primary-color);
-    padding: 5px 12px;
+    padding: 5px 12px !important;
     border: 1px solid var(--primary-color);
     border-radius: 12px;
     background: rgba(255, 255, 255, 0.2);
     backdrop-filter: blur(5px);
     cursor: pointer;
     transition: all 0.3s;
+    font-weight: normal !important;
 }
 
 .user-menu a:hover,

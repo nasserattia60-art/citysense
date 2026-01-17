@@ -19,11 +19,11 @@
                 <button id="open-profile-modal" class="btn primary">
     Edit Profile
 </button>
-
             </li>
+            <li>
               <form method="post" action="{% url 'users:logout' %}">
                 {% csrf_token %}
-                <button type="submit" style='background-color: #111827;border: none;color: #fff;' class='bt_fo'>Logout</button>
+                <button type="submit"  class='bt_fo'>Logout</button>
               </form>
             </li>
         </ul>
@@ -37,10 +37,10 @@
             <div class="avatar-ring ">
                 <div class="avatar-img">
                 {% if context.profile.avatar %}
-                    <img src="{{ context.profile.avatar.url }}" alt="ar Avatar">
+                    <img src="{{ context.profile.avatar.url }}" alt="User Avatar">
                     <span class="online-dot"></span>
                 {% else %}
-                    <img src="{% static 'images/default-avatar.png' %}" alt="Avatar">
+                    <img src="{% static 'images/default-avatar.jpg' %}" alt="Avatar">
                     <span class="online-dot"></span>
                 {% endif %}
                 
@@ -49,10 +49,7 @@
          
             <div class="info">
                 <h1>{{ context.user.username }}</h1>
-                {% if context.profile.bio %}
-                <p><strong>Bio:</strong> {{ context.profile.bio }}</p>
-                {% endif %}
-                
+              
             </div>
         </section>
 
@@ -77,10 +74,11 @@
         <!-- About -->
         <section class="about">
             <h2>About Me</h2>
-            <p>
-                Passionate software engineer with a focus on AI, web development,
-                and building scalable systems that actually work in real life.
-            </p>
+            {% if context.profile.bio %}
+                <p>{{ context.profile.bio }}</p>
+            {% else %}
+                <p style="color: #999; font-style: italic;">No bio added yet. Click "Edit Profile" to add one.</p>
+            {% endif %}
         </section>
         
     </main>
@@ -94,23 +92,62 @@
 
         <h3>Edit Profile</h3>
         
-        <form method="post" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data" id="profile-form">
             {% csrf_token %}
 
+            <!-- Bio Field -->
             <div class="form-group">
-                <label>Bio</label>
+                <label for="{{ context.form.bio.id_for_label }}">Bio</label>
                 {{ context.form.bio }}
+                {% if context.form.bio.errors %}
+                    <span class="form-error">
+                        {% for error in context.form.bio.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                {% endif %}
             </div>
 
+            <!-- City Field -->
             <div class="form-group">
-                <label>City</label>
+                <label for="{{ context.form.city.id_for_label }}">City</label>
                 {{ context.form.city }}
+                {% if context.form.city.errors %}
+                    <span class="form-error">
+                        {% for error in context.form.city.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                {% endif %}
             </div>
 
+            <!-- Avatar Field -->
             <div class="form-group">
-                <label>Avatar</label>
+                <label for="{{ context.form.avatar.id_for_label }}">Avatar</label>
+                {% if context.profile.avatar %}
+                    <div class="current-avatar">
+                        <img src="{{ context.profile.avatar.url }}" alt="Current Avatar" style="max-width: 100px; border-radius: 50%;">
+                        <p style="font-size: 0.85em; color: #999; margin-top: 5px;">Current avatar</p>
+                    </div>
+                {% endif %}
                 {{ context.form.avatar }}
+                {% if context.form.avatar.errors %}
+                    <span class="form-error">
+                        {% for error in context.form.avatar.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </span>
+                {% endif %}
             </div>
+
+            <!-- Non-field errors -->
+            {% if context.form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in context.form.non_field_errors %}
+                        <p class="form-error">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
             <div class="actions">
                 <button type="submit" class="btn primary">Save</button>

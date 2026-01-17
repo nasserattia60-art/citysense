@@ -1,26 +1,43 @@
-# ملفات النظام أو مؤقتة
-*.log
-*.tmp
-
-# ملفات البيئة أو السرية
+# Environment variables and secrets
 .env
-venv/     
-__pycache__/ 
+.env.local
 
-# فولدرات تعتمد على التثبيت
-node_modules/
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
 
-# ملفات IDE
-.vscode/
-
+# Django
 db.sqlite3
-.idea/
-*.pyc    
-*.pyo
-*.log
-# *.sqlite3-journal
-# .env
 media/
+staticfiles/
+*.log
 
-requirements.txt
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Project specific
+logs/

@@ -66,5 +66,10 @@ def profile_view(request):
         "form": form,
         "user": request.user,
         "profile": profile,
+        "context": {
+            "form": form,
+            "user": request.user,
+            "profile": profile,
+        }
     }
     return render(request, "users/profile.html", context)
