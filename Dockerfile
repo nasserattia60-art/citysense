@@ -34,12 +34,14 @@ COPY . .
 # Create necessary directories
 RUN mkdir -p /app/staticfiles /app/logs /app/media
 
+# Set environment variables before collectstatic
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV DJANGO_SETTINGS_MODULE=citysense.settings.prod
+
 # Collect static files
 RUN python manage.py collectstatic --no-input --clear || true
 
-# Set environment variables
-ENV PYTHONUNBUFFERED=1
-ENV PYTHONDONTWRITEBYTECODE=1
 ENV PORT=8000
 
 # Expose port (use static port for build, runtime uses $PORT)
