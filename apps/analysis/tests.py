@@ -259,6 +259,7 @@ class HeatmapDataTests(TestCase):
 
     def test_heatmap_returns_json(self):
         """Test that heatmap endpoint returns JSON."""
+        self.client.login(email="test@example.com", password="testpass123")
         url = reverse("analysis:heatmap-data")
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
@@ -266,6 +267,7 @@ class HeatmapDataTests(TestCase):
 
     def test_heatmap_default_layer(self):
         """Test heatmap with default layer."""
+        self.client.login(email="test@example.com", password="testpass123")
         url = reverse("analysis:heatmap-data")
         response = self.client.get(url)
         data = json.loads(response.content)
@@ -277,6 +279,7 @@ class HeatmapDataTests(TestCase):
 
     def test_heatmap_safety_layer(self):
         """Test heatmap with safety layer."""
+        self.client.login(email="test@example.com", password="testpass123")
         url = reverse("analysis:heatmap-data")
         response = self.client.get(url, {"layer": "safety"})
         data = json.loads(response.content)
@@ -286,6 +289,7 @@ class HeatmapDataTests(TestCase):
 
     def test_heatmap_noise_layer(self):
         """Test heatmap with noise layer."""
+        self.client.login(email="test@example.com", password="testpass123")
         url = reverse("analysis:heatmap-data")
         response = self.client.get(url, {"layer": "noise"})
         data = json.loads(response.content)

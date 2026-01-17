@@ -101,6 +101,28 @@ FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880  # 5MB
 FILE_UPLOAD_PERMISSIONS = 0o644
 
 # ============================================================================
+# CACHING CONFIGURATION
+# ============================================================================
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        "LOCATION": "citysense-cache",
+        "OPTIONS": {
+            "MAX_ENTRIES": 1000
+        },
+        "KEY_PREFIX": "citysense",
+        "TIMEOUT": 300,  # 5 minutes default
+    }
+}
+
+# Cache timeouts for specific data
+CACHE_TIMEOUTS = {
+    "weather": 3600,  # 1 hour - weather changes slowly
+    "city_suggestions": 86400,  # 24 hours - city data is static
+}
+
+# ============================================================================
 # LOGGING CONFIGURATION (Free Plan optimized)
 # ============================================================================
 

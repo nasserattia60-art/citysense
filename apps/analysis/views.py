@@ -5,15 +5,16 @@ Handles user location searches, AI analysis, weather data,
 and report viewing.
 """
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import AnalysisForm
 from .models import Location, AnalysisResult
 from apps.ai_engine.services.analyze import analyze_location
 from apps.ai_engine.services.geocoding import geocode_address
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from apps.ai_engine.services.groq_service import analyze_location_ai
 from apps.ai_engine.services.weather import get_weather_intelligence
+from apps.ai_engine.cache import cache_weather, cache_city_suggestions
 from django.contrib import messages
 from .services import suggest_city_fuzzy
 from django.views.decorators.http import require_GET
@@ -71,9 +72,9 @@ def analyze_view(request):
                 "error": "AI analysis failed. Please try again later."
             })
 
-        # Fetch weather data
+        # Fetch weather data (with caching)
         try:
-            weather = get_weather_intelligence(geo["lat"], geo["lng"])
+            weather = cache_weather(geo["lat"], geo["lng"], get_weather_intelligence)
             logger.info(f"Weather data retrieved for: {address}")
         except Exception as e:
             logger.error(f"Weather fetch failed for {address}: {str(e)}")
@@ -117,15 +118,13 @@ def report_view(request, pk):
     Only shows reports belonging to the authenticated user.
     Returns 404 if report not found or belongs to different user.
     """
-    try:
-        report = AnalysisResult.objects.get(pk=pk, user=request.user)
-        logger.info(f"Report viewed: {pk} by user: {request.user.id}")
-        return render(request, "analysis/report.html", {"report": report})
-    except AnalysisResult.DoesNotExist:
-        logger.warning(f"Report not found or unauthorized: {pk} for user: {request.user.id}")
-        return render(request, "error/404.html", status=404)
+    report = get_object_or_404(AnalysisResult, pk=pk, user=request.user)
+    logger.info(f"Report viewed: {pk} by user: {request.user.id}")
+    return render(request, "analysis/report.html", {"report": report})
 
 
+@login_required
+@require_GET
 def heatmap_data(request):
     """
     AJAX endpoint providing heatmap data for Leaflet map visualization.
@@ -137,6 +136,7 @@ def heatmap_data(request):
     - rent: Rent level (High=30, Other=15)
     
     Returns: JSON list with lat, lng, weight properties
+    Requires authentication (login_required).
     """
     layer = request.GET.get("layer", "ai_score")
 
@@ -174,6 +174,7 @@ def city_suggestions(request):
     
     Requires minimum 2 characters to reduce noise.
     Returns fuzzy-matched city names with coordinates.
+    Results are cached for 24 hours to optimize performance.
     
     Query params:
     - q: Search query (minimum 2 chars)
@@ -186,7 +187,7 @@ def city_suggestions(request):
         return JsonResponse([], safe=False)
 
     try:
-        results = suggest_city_fuzzy(query)
+        results = cache_city_suggestions(query, suggest_city_fuzzy)
         logger.debug(f"City suggestions: '{query}' returned {len(results)} results")
         return JsonResponse(results, safe=False)
     except Exception as e:

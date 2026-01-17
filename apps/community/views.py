@@ -5,7 +5,7 @@ Handles user feedback on analysis reports to help
 improve AI accuracy and insights.
 """
 
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import FeedbackForm
 from .models import ReportFeedback
@@ -29,11 +29,7 @@ def feedback_view(request, report_id):
     GET: Display feedback form
     POST: Save feedback and redirect to report
     """
-    try:
-        report = AnalysisResult.objects.get(id=report_id)
-    except AnalysisResult.DoesNotExist:
-        logger.warning(f"Feedback attempt for non-existent report: {report_id}")
-        return render(request, "error/404.html", status=404)
+    report = get_object_or_404(AnalysisResult, id=report_id)
     
     form = FeedbackForm(request.POST or None)
 
