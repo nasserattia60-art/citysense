@@ -11,8 +11,8 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-# Use production settings if RENDER env var is set (Render deployment)
-settings_module = 'citysense.settings.prod' if os.getenv('RENDER') else 'citysense.settings.dev'
+# Use production settings if RENDER or RAILWAY env var is set
+settings_module = 'citysense.settings.prod' if os.getenv('RENDER') or os.getenv('RAILWAY_ENVIRONMENT') else 'citysense.settings.dev'
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', settings_module)
 
 application = get_wsgi_application()

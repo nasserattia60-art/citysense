@@ -47,5 +47,8 @@ ENV PORT=8000
 # Expose port (use static port for build, runtime uses $PORT)
 EXPOSE 8000
 
+# Set Railway environment variable for production detection
+ENV RAILWAY_ENVIRONMENT=production
+
 # Run migrations and start server
 CMD python manage.py migrate --no-input && exec gunicorn citysense.wsgi:application --bind 0.0.0.0:${PORT:-8000} --workers 1 --worker-class sync --max-requests 100 --timeout 30
