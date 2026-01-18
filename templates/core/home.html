@@ -16,7 +16,7 @@
         </p>
         {% if not user.is_authenticated %}
             <div class="important-note">
-                <p><strong>New here?</strong> <a href="{% url 'users:register' %}">Create an account</a> to start analyzing cities.</p>
+                <p><strong>New here?</strong> <a href="{% url 'users:register' %}" style='position: relative;z-index: 10;color: var(--secondary-color);'>Create an account</a> to start analyzing cities.</p>
             </div>
         {% endif %}
 
@@ -43,77 +43,253 @@
 
     <section id="inspiration" class="info-card" aria-labelledby="inspiration-title">
         <h2 id="inspiration-title">🌟 Inspiration</h2>
-        <p>
-            Many people consider moving to or visiting a new city based on attractive
-            images or incomplete information, only to face unexpected realities later.
-            <strong>CitySense</strong> exists to reveal the
-            <strong>real day-to-day conditions</strong> before decisions are made.
-        </p>
+        <div class="card-content">
+            <p>
+                Moving to or visiting a new city is often based on incomplete information—beautiful pictures, 
+                marketing campaigns, or anecdotal stories. But the reality on the ground is often vastly different.
+            </p>
+            <p style="margin-top: 15px;">
+                <strong>CitySense was born from a simple observation:</strong> People make major life decisions 
+                about where to live or visit without truly understanding the real, day-to-day conditions. We 
+                recognized the need for an objective, data-driven tool that provides honest insights into what 
+                living in or visiting a city actually means.
+            </p>
+            <p style="margin-top: 15px;">
+                Instead of relying on real estate brochures or touristy guides, we wanted to empower people with 
+                AI-driven analysis that covers safety, cost of living, weather, cultural character, and practical 
+                urban realities—everything that affects quality of life.
+            </p>
+        </div>
     </section>
 
     <section id="what-it-does" class="info-card" aria-labelledby="what-title">
         <h2 id="what-title">⚙️ What it does</h2>
-        <ul>
-            <li>Explore cities before relocating or visiting</li>
-            <li>Understand real-life advantages, disadvantages, and recurring issues</li>
-            <li>Access practical data: cost of living, safety, services</li>
-            <li>Build a realistic mental picture of any city</li>
-            <li>Reduce risks caused by assumptions or outdated information</li>
-        </ul>
+        <div class="card-content">
+            <p style="margin-bottom: 15px;">
+                <strong>CitySense provides AI-powered, objective analysis of cities and locations</strong>. 
+                It helps you make better decisions about where to live, work, or travel by revealing real-life 
+                conditions before you commit to a location.
+            </p>
+            <h3 style="font-size: 16px; margin: 20px 0 10px; color: #2c3e50;">Key Features:</h3>
+            <ul style="margin-left: 20px;">
+                <li><strong>AI-Powered City Analysis:</strong> Get comprehensive insights powered by Groq LLM, analyzing safety, cost of living, attractions, and livability</li>
+                <li><strong>Real-World Data:</strong> Access practical information about weather, noise levels, water quality, and rental costs</li>
+                <li><strong>Safety & Quality Metrics:</strong> Understand relative safety scores, tourism potential, and quality of life indicators</li>
+                <li><strong>Community Feedback:</strong> Read and share user experiences about cities through our community feature</li>
+                <li><strong>Detailed Reports:</strong> Generate comprehensive analysis reports with weather data, attractions, and practical recommendations</li>
+                <li><strong>City Comparison:</strong> Compare multiple locations side-by-side to make informed decisions</li>
+                <li><strong>User Dashboard:</strong> Track your analysis history and saved reports in one place</li>
+            </ul>
+        </div>
     </section>
 
     <section id="how-we-built" class="info-card" aria-labelledby="build-title">
         <h2 id="build-title">🛠️ How we built it</h2>
-        <ul>
-            <li><strong>Backend:</strong> Django</li>
-            <li><strong>Frontend:</strong> HTML, CSS, JavaScript</li>
-            <li><strong>UX Focus:</strong> clarity, comparison, usability</li>
-            <li><strong>Architecture:</strong> clean separation of concerns</li>
-            <li><strong>Scalability:</strong> built for growth</li>
-        </ul>
+        <div class="card-content">
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Tech Stack:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li><strong>Backend Framework:</strong> Django 5.0 - A robust Python framework for scalable web applications</li>
+                <li><strong>Frontend:</strong> HTML5, CSS3, JavaScript - Clean, semantic markup with responsive design</li>
+                <li><strong>AI Engine:</strong> Groq LLM (Large Language Model) - Fast, intelligent city analysis</li>
+                <li><strong>Database:</strong> PostgreSQL/SQLite - Reliable data persistence and analytics</li>
+                <li><strong>Real-Time Features:</strong> AJAX for seamless city suggestions and dynamic interactions</li>
+                <li><strong>Maps & Geolocation:</strong> Leaflet.js for interactive mapping and location visualization</li>
+                <li><strong>Authentication:</strong> Django's built-in auth system with custom user model</li>
+                <li><strong>Caching:</strong> Strategic caching layer for performance optimization</li>
+                <li><strong>Deployment:</strong> Docker containerization, support for Railway, Render, and PythonAnywhere</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Architecture:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 20px;">
+                <li><strong>Modular Design:</strong> Organized into apps (analysis, reports, community, dashboard, users)</li>
+                <li><strong>Separation of Concerns:</strong> Clear boundaries between models, views, services, and templates</li>
+                <li><strong>Scalable Backend:</strong> Built for easy expansion with new features and data sources</li>
+                <li><strong>User-Centric Frontend:</strong> Intuitive interfaces with accessibility in mind (ARIA labels, semantic HTML)</li>
+                <li><strong>Secure Infrastructure:</strong> HTTPS enforcement, CSRF protection, secure cookies, input validation</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Key Technical Features:</h3>
+            <ul style="margin-left: 20px;">
+                <li>⚡ Real-time city autocomplete with fuzzy matching</li>
+                <li>🤖 AI-powered intelligent analysis using Groq</li>
+                <li>📊 Comprehensive data visualization and reporting</li>
+                <li>💬 Community-driven feedback system</li>
+                <li>🔐 Multi-user environment with role-based access</li>
+                <li>📱 Fully responsive design (desktop, tablet, mobile)</li>
+                <li>⚙️ Efficient caching strategies for rapid performance</li>
+            </ul>
+        </div>
     </section>
 
     <section id="challenges" class="info-card" aria-labelledby="challenges-title">
-        <h2 id="challenges-title">🚧 Challenges</h2>
-        <ul>
-            <li>Presenting city problems objectively</li>
-            <li>Organizing large datasets clearly</li>
-            <li>Designing for users with diverse backgrounds</li>
-            <li>Delivering insights quickly without overload</li>
-            <li>Keeping flexibility as the platform grows</li>
-        </ul>
+        <h2 id="challenges-title">🚧 Challenges we ran into</h2>
+        <div class="card-content">
+            <p style="margin-bottom: 15px;">
+                Building CitySense presented unique technical and design challenges that required creative 
+                problem-solving:
+            </p>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Technical Challenges:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li><strong>AI Bias & Objectivity:</strong> Ensuring the AI analysis is objective and unbiased while covering diverse global cities with varying data availability</li>
+                <li><strong>Data Integration:</strong> Aggregating real-world data from multiple sources (weather APIs, geographic databases, public datasets) with different formats and reliability</li>
+                <li><strong>Performance Optimization:</strong> Handling large datasets and complex queries while maintaining fast response times for a smooth user experience</li>
+                <li><strong>Geolocation Accuracy:</strong> Ensuring accurate city identification and handling edge cases (same city names in different countries, misspellings)</li>
+                <li><strong>Real-Time Suggestions:</strong> Implementing fuzzy matching for city autocomplete with zero latency perception</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Design & UX Challenges:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li><strong>Information Overload:</strong> Presenting comprehensive city data in a way that's informative but not overwhelming</li>
+                <li><strong>Accessibility:</strong> Making complex visualizations and data accessible to users with different abilities and technical backgrounds</li>
+                <li><strong>Visual Design:</strong> Creating an intuitive, beautiful interface that works seamlessly across all devices and screen sizes</li>
+                <li><strong>User Trust:</strong> Designing the interface to communicate trustworthiness and transparency about how our AI arrives at conclusions</li>
+                <li><strong>Mobile Responsiveness:</strong> Ensuring full functionality on mobile devices with limited screen real estate</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Operational Challenges:</h3>
+            <ul style="margin-left: 20px;">
+                <li><strong>Deployment & Scalability:</strong> Designing architecture that scales efficiently from single-user testing to production with thousands of concurrent users</li>
+                <li><strong>Data Quality:</strong> Maintaining and validating data accuracy across hundreds of cities and locations</li>
+                <li><strong>Community Management:</strong> Building moderation and validation systems for user-generated feedback</li>
+            </ul>
+        </div>
     </section>
 
     <section id="accomplishments" class="info-card" aria-labelledby="accomplishments-title">
-        <h2 id="accomplishments-title">🏆 Accomplishments</h2>
-        <ul>
-            <li>A platform built around real needs</li>
-            <li>Balanced, realistic city insights</li>
-            <li>UX that supports meaningful decisions</li>
-            <li>Strong technical foundation</li>
-            <li>Idea transformed into a working product</li>
-        </ul>
+        <h2 id="accomplishments-title">🏆 Accomplishments we're proud of</h2>
+        <div class="card-content">
+            <p style="margin-bottom: 15px;">
+                We're proud of what we've accomplished. Here's what we've built:
+            </p>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Product Achievements:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>✨ <strong>Full-Featured MVP:</strong> A complete, production-ready platform with authentication, analysis, reporting, and community features</li>
+                <li>🤖 <strong>Intelligent AI Analysis:</strong> Integration with Groq LLM for real-time, sophisticated city analysis</li>
+                <li>📊 <strong>Comprehensive Analytics:</strong> Multi-dimensional city scoring (safety, tourism, livability, cost)</li>
+                <li>🌍 <strong>Global City Database:</strong> Support for hundreds of cities worldwide with accurate geolocation</li>
+                <li>💬 <strong>Community Platform:</strong> User feedback system that enriches analysis with real-world experiences</li>
+                <li>📈 <strong>User Dashboard:</strong> Personalized experience with saved reports and analysis history</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Technical Achievements:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>🏗️ <strong>Clean Architecture:</strong> Modular design with 7 Django apps, making the codebase maintainable and scalable</li>
+                <li>⚡ <strong>Performance Optimization:</strong> Fuzzy city matching, intelligent caching, and optimized database queries</li>
+                <li>🔐 <strong>Security First:</strong> Full HTTPS, CSRF protection, secure authentication, input validation, and secure headers</li>
+                <li>🚀 <strong>Production Deployment:</strong> Multi-platform support (Railway, Render, Docker, PythonAnywhere) with automated CI/CD ready</li>
+                <li>♿ <strong>Accessibility Focus:</strong> ARIA labels, semantic HTML, keyboard navigation, and screen reader support</li>
+                <li>📱 <strong>Responsive Design:</strong> Perfect functionality on desktop, tablet, and mobile devices</li>
+                <li>🔄 <strong>Real-Time Features:</strong> AJAX-powered autocomplete and dynamic data loading without page refresh</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Business & Impact:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>✅ <strong>Solved a Real Problem:</strong> Created a tool that addresses actual user pain points in city decision-making</li>
+                <li>🎯 <strong>User-Centric Design:</strong> Every feature designed with real user feedback and needs in mind</li>
+                <li>🌱 <strong>Foundation for Growth:</strong> Built a scalable platform ready for new features, partnerships, and expansion</li>
+                <li>📚 <strong>Comprehensive Documentation:</strong> Well-documented code, API endpoints, and deployment guides for future developers</li>
+                <li>🤝 <strong>Community Building:</strong> Created the infrastructure for a community-driven platform</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Beyond the Code:</h3>
+            <ul style="margin-left: 20px;">
+                <li>📖 Complete deployment guides (Railway, Render, PythonAnywhere, Docker)</li>
+                <li>🧪 Comprehensive test coverage and validation systems</li>
+                <li>📱 Fully responsive UI that works seamlessly across all devices</li>
+                <li>🎨 Consistent visual design language and user experience</li>
+            </ul>
+        </div>
     </section>
 
     <section id="lessons" class="info-card" aria-labelledby="lessons-title">
-        <h2 id="lessons-title">📚 Lessons Learned</h2>
-        <ul>
-            <li>Transparency is essential for trust</li>
-            <li>UX directly influences life decisions</li>
-            <li>Architecture matters before features</li>
-            <li>Simplifying data is an art</li>
-            <li>User perspective beats assumptions</li>
-        </ul>
+        <h2 id="lessons-title">📚 What we learned</h2>
+        <div class="card-content">
+            <p style="margin-bottom: 15px;">
+                Building CitySense taught us invaluable lessons about product development, technology, and user needs:
+            </p>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">About Product Design:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li><strong>Transparency Builds Trust:</strong> Users want to understand how conclusions are reached. Explaining the 'why' behind AI recommendations is as important as the recommendations themselves</li>
+                <li><strong>Data Presentation Matters:</strong> How you present information shapes decisions. Simple, well-organized data beats comprehensive but overwhelming datasets</li>
+                <li><strong>Objectivity is Hard but Possible:</strong> Presenting unbiased views of cities requires careful prompt engineering, data validation, and continuous refinement</li>
+                <li><strong>User Perspective Beats Assumptions:</strong> Our initial assumptions about what users needed were often wrong. Real feedback is invaluable</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">About Technology:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li><strong>Architecture Decisions Have Lasting Impact:</strong> Investing time in clean architecture early pays dividends when adding features or scaling</li>
+                <li><strong>Simplicity in Code Complexity:</strong> Simple, readable code is more valuable than clever code. Future maintainability matters</li>
+                <li><strong>Performance Optimization Starts Early:</strong> Caching strategies and database optimization are not afterthoughts—they're core design decisions</li>
+                <li><strong>Testing Prevents Headaches:</strong> Comprehensive tests catch bugs before users do and make refactoring safer</li>
+                <li><strong>AI Integration is Complex:</strong> Working with LLMs requires prompt engineering, output validation, and fallback strategies</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">About User Experience:</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li><strong>Fast Feedback Matters:</strong> Real-time autocomplete and quick responses create better user experiences than perfect-but-slow interfaces</li>
+                <li><strong>Accessibility is Not Optional:</strong> Building accessible UX from the start is easier and benefits all users, not just those with disabilities</li>
+                <li><strong>Mobile-First Thinking Works:</strong> Designing for mobile constraints first creates better, more focused experiences for all devices</li>
+                <li><strong>Intuitive Navigation > Beautiful Design:</strong> Users will forgive less-than-perfect visuals if the interface is intuitive</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">About Deployment & Operations:</h3>
+            <ul style="margin-left: 20px;">
+                <li><strong>Multiple Deployment Options are Valuable:</strong> Supporting various platforms (Docker, Railway, Render, PythonAnywhere) makes the product accessible to different teams</li>
+                <li><strong>Documentation is as Important as Code:</strong> Well-documented systems are easier to maintain, deploy, and extend</li>
+                <li><strong>Security is Non-Negotiable:</strong> Security can't be bolted on later—it must be built in from day one</li>
+                <li><strong>Monitoring and Logging Save Time:</strong> Good logging infrastructure makes debugging and monitoring vastly easier in production</li>
+            </ul>
+        </div>
     </section>
 
     <section id="whats-next" class="info-card" aria-labelledby="next-title">
-        <h2 id="next-title">🚀 What’s Next</h2>
-        <ul>
-            <li>Real-time verified data integration</li>
-            <li>City-based community reporting</li>
-            <li>Location-aware alerts</li>
-            <li>Stronger data validation pipelines</li>
-        </ul>
+        <h2 id="next-title">🚀 What's next for CitySense</h2>
+        <div class="card-content">
+            <p style="margin-bottom: 15px;">
+                We have an exciting roadmap for CitySense. Here's what we're planning:
+            </p>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Short-term (Next 3 months):</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>📍 <strong>Improved Location Matching:</strong> Enhanced geolocation with support for neighborhoods, districts, and specific addresses</li>
+                <li>🌡️ <strong>Advanced Weather Integration:</strong> Historical weather patterns, seasonal variations, and climate trend analysis</li>
+                <li>⭐ <strong>User Ratings & Reviews:</strong> Community-driven ratings for accuracy and helpfulness of city analyses</li>
+                <li>🔔 <strong>Personalized Alerts:</strong> Notify users of relevant city updates and new analyses for saved locations</li>
+                <li>📊 <strong>Comparison Dashboard:</strong> Side-by-side analysis of multiple cities with custom metrics</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Mid-term (6-12 months):</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>🔗 <strong>Real-Time Data Integrations:</strong> Direct connections to verified data sources (housing markets, crime statistics, public transportation data)</li>
+                <li>🎤 <strong>City-Based Communities:</strong> Forum-style communities for each city where residents share experiences and advice</li>
+                <li>📱 <strong>Mobile App:</strong> Native iOS and Android applications with offline access and push notifications</li>
+                <li>🗺️ <strong>Interactive Maps:</strong> Enhanced mapping with heat maps for safety, cost of living, and other metrics</li>
+                <li>🤝 <strong>Expert Profiles:</strong> Local experts (relocation consultants, real estate agents) offering verified insights</li>
+                <li>💼 <strong>Job Market Analysis:</strong> Integration with employment data for career-focused city evaluation</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Long-term Vision (1+ years):</h3>
+            <ul style="margin-left: 20px; margin-bottom: 15px;">
+                <li>🌏 <strong>Global Expansion:</strong> Support for every city and location worldwide with regional languages and cultural context</li>
+                <li>🤖 <strong>AI Refinement:</strong> Advanced machine learning models trained on user feedback for increasingly accurate analysis</li>
+                <li>📈 <strong>Predictive Analytics:</strong> Forecast future city development, gentrification, and quality of life changes</li>
+                <li>🏘️ <strong>Relocation Services:</strong> Partner with relocation companies, housing providers, and local services</li>
+                <li>🎓 <strong>Education Platform:</strong> Resources for students, young professionals, and families considering relocation</li>
+                <li>🌱 <strong>Sustainability Focus:</strong> Carbon footprint, environmental impact, and climate resilience ratings for cities</li>
+            </ul>
+
+            <h3 style="font-size: 16px; margin: 15px 0 10px; color: #2c3e50;">Technology Roadmap:</h3>
+            <ul style="margin-left: 20px;">
+                <li>🚀 <strong>Performance:</strong> Optimize for millions of concurrent users with advanced caching and database strategies</li>
+                <li>🔌 <strong>API Platform:</strong> Open API for third-party integrations and partner applications</li>
+                <li>📊 <strong>Advanced Analytics:</strong> Deeper insights with machine learning and predictive models</li>
+                <li>🔐 <strong>Enhanced Security:</strong> Enterprise-grade security features and compliance certifications</li>
+                <li>🌐 <strong>International Support:</strong> Multi-language support and regional customizations</li>
+            </ul>
+        </div>
     </section>
 
 </main>

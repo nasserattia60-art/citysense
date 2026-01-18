@@ -184,6 +184,51 @@
 }
 
 /* =========================
+   Card Content Styling
+========================= */
+.card-content {
+    color: var(--text-color);
+}
+
+.card-content p {
+    color: var(--text-color);
+    line-height: 1.75;
+    font-size: 1rem;
+    margin-bottom: 12px;
+}
+
+.card-content h3 {
+    color: var(--text-color);
+    font-weight: 700;
+    margin-top: 20px;
+    margin-bottom: 12px;
+}
+
+.card-content ul {
+    list-style: none;
+    padding: 0;
+    margin-left: 0;
+}
+
+.card-content ul li {
+    margin-bottom: 12px;
+    padding-left: 0;
+    color: var(--text-color);
+    line-height: 1.7;
+    position: relative;
+}
+
+.card-content ul li:before {
+    content: "•";
+    color: var(--primary-color);
+    font-weight: bold;
+    display: inline-block;
+    width: 1em;
+    margin-left: -1em;
+    margin-right: 0.5em;
+}
+
+/* =========================
    Responsive
 ========================= */
 @media (max-width: 768px) {
